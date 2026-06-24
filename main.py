@@ -1,20 +1,17 @@
-def scan_operators(self):
-    tokenizer = []
+def scan_operators(data):
+    tokens = []
 
-    for d in incoming_data:
+    for d in data:
         match d.strip():
             case "+":
-                tokenizer.append("OP (+)")
+                tokens.append("OP (+)")
             case "-":
-                tokenizer.append("OP (-)")
+                tokens.append("OP (-)")
             case "*":
-                tokenizer.append("OP (*)")
+                tokens.append("OP (*)")
             case "/":
-                tokenizer.append("OP (/)")
+                tokens.append("OP (/)")
             case _:
                 print(f"input '{d}' not supported")
 
-    return tokenizer
-
-incoming_data = ["+", "-", "*", "/"]
-print(scan_operators(incoming_data))
+    return tokens

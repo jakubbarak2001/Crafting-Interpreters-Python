@@ -1,7 +1,6 @@
 import unittest
 from main import scan_operators
 
-
 class TestArithmeticOperatorsScanning(unittest.TestCase):
     expected_output = ["OP (+)", "OP (-)", "OP (*)", "OP (/)"]
     def test_standard_operators(self):
