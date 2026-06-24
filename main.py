@@ -2,7 +2,7 @@ def scan_operators(self):
     tokenizer = []
 
     for d in incoming_data:
-        match d:
+        match d.strip():
             case "+":
                 tokenizer.append("OP (+)")
             case "-":
