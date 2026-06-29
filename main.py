@@ -18,6 +18,9 @@ class Token:
     kind: TokenKind
     value: str
 
+    def __repr__(self):
+        return f"{self.kind.name} {self.value!r}"
+
 
 def _is_digit(c: str) -> bool:
     return '0' <= c <= '9'
