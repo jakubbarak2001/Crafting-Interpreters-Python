@@ -1,2 +1,4 @@
 .venv
 inspiration.txt
+.idea
+__pycache__
