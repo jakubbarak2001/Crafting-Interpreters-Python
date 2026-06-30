@@ -22,12 +22,18 @@ class TestArithmeticOperatorsScanning(unittest.TestCase):
             tokenize("+ # this is ignored\n-"),
             [Token(TokenKind.PLUS, '+'), Token(TokenKind.MINUS, '-')],
         )
+    def test_comment_at_end_of_file(self):
+        self.assertEqual(
+            tokenize("+ # this is ignored"),
+            [Token(TokenKind.PLUS, '+')]
+        )
 
     def test_newline_is_whitespace(self):
         self.assertEqual(
             tokenize("+\n-"),
             [Token(TokenKind.PLUS, '+'), Token(TokenKind.MINUS, '-')],
         )
+
 
 if __name__ == '__main__':
     unittest.main()
