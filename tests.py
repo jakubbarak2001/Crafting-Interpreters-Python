@@ -35,6 +35,29 @@ class TestArithmeticOperatorsScanning(unittest.TestCase):
         )
 
 
+class TestComparisonOperatorsScanning(unittest.TestCase):
+    def test_comparison_operators(self):
+        self.assertEqual(
+            tokenize("< > ="),
+            [Token(TokenKind.LT, '<'), Token(TokenKind.GT, '>'), Token(TokenKind.EQ, '=')]
+        )
+
+    def test_maximal_munch(self):
+        self.assertEqual(
+            tokenize("<= >= == !="),
+            [Token(TokenKind.LT_EQ, '<='), Token(TokenKind.GT_EQ, '>='),
+             Token(TokenKind.EQ_EQ, '=='), Token(TokenKind.BANQ_EQ, '!=')]
+        )
+
+    def test_maximal_munch_rule(self):
+        self.assertEqual(
+            tokenize("<== >== ==="),
+            [Token(TokenKind.LT_EQ, '<='), Token(TokenKind.EQ, '='),
+             Token(TokenKind.GT_EQ, '>='), Token(TokenKind.EQ, '='),
+             Token(TokenKind.EQ_EQ, '=='), Token(TokenKind.EQ, '=')]
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
 

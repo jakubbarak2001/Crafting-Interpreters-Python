@@ -11,6 +11,14 @@ class TokenKind(Enum):
     SLASH = auto()
     WHITESPACE = auto()
     COMMENT = auto()
+    EQ = auto()
+    LT = auto()
+    LT_EQ = auto()
+    GT = auto()
+    GT_EQ = auto()
+    EQ_EQ = auto()
+    BANQ = auto()
+    BANQ_EQ = auto()
 
 
 @dataclass(frozen=True)
@@ -75,6 +83,30 @@ def _parse_one_token(stream: CharStream) -> TokenKind:
             return TokenKind.INT
         case ' ' | '\n':
             return TokenKind.WHITESPACE
+        case '<':
+            if stream.peek() == '=':
+                stream.next()
+                return TokenKind.LT_EQ
+            else:
+                return TokenKind.LT
+        case '>':
+            if stream.peek() == '=':
+                stream.next()
+                return TokenKind.GT_EQ
+            else:
+                return TokenKind.GT
+        case '=':
+            if stream.peek() == '=':
+                stream.next()
+                return TokenKind.EQ_EQ
+            else:
+                return TokenKind.EQ
+        case '!':
+            if stream.peek() == '=':
+                stream.next()
+                return TokenKind.BANQ_EQ
+            else:
+                return TokenKind.BANQ
         case c:
             raise ValueError(f'Invalid symbol: {c}')
 
@@ -90,5 +122,5 @@ def tokenize(src: str) -> list[Token]:
     return tokens
 
 if __name__ == '__main__':
-    token = tokenize("  4 2+  ###312312 ")
+    token = tokenize("< <= > >= = == <== >== ! != ==== ===")
     print(token)
