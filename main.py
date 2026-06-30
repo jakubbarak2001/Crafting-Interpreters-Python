@@ -17,8 +17,8 @@ class TokenKind(Enum):
     GT = auto()
     GT_EQ = auto()
     EQ_EQ = auto()
-    BANQ = auto()
-    BANQ_EQ = auto()
+    BANG = auto()
+    BANG_EQ = auto()
 
 
 @dataclass(frozen=True)
@@ -104,9 +104,9 @@ def _parse_one_token(stream: CharStream) -> TokenKind:
         case '!':
             if stream.peek() == '=':
                 stream.next()
-                return TokenKind.BANQ_EQ
+                return TokenKind.BANG_EQ
             else:
-                return TokenKind.BANQ
+                return TokenKind.BANG
         case c:
             raise ValueError(f'Invalid symbol: {c}')
 

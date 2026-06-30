@@ -46,7 +46,7 @@ class TestComparisonOperatorsScanning(unittest.TestCase):
         self.assertEqual(
             tokenize("<= >= == !="),
             [Token(TokenKind.LT_EQ, '<='), Token(TokenKind.GT_EQ, '>='),
-             Token(TokenKind.EQ_EQ, '=='), Token(TokenKind.BANQ_EQ, '!=')]
+             Token(TokenKind.EQ_EQ, '=='), Token(TokenKind.BANG_EQ, '!=')]
         )
 
     def test_maximal_munch_rule(self):
