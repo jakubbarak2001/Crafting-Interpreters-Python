@@ -120,7 +120,3 @@ def tokenize(src: str) -> list[Token]:
         if token_kind not in (TokenKind.WHITESPACE, TokenKind.COMMENT):
             tokens.append(Token(token_kind, stream.mark_end()))
     return tokens
-
-if __name__ == '__main__':
-    token = tokenize("< <= > >= = == <== >== ! != ==== ===")
-    print(token)

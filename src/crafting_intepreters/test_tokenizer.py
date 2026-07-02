@@ -1,5 +1,5 @@
 import unittest
-from main import tokenize, Token, TokenKind
+from crafting_intepreters.tokenizer import Token, TokenKind, tokenize
 
 class TestArithmeticOperatorsScanning(unittest.TestCase):
     expected_output = [
