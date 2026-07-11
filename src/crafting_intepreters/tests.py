@@ -1,4 +1,5 @@
 import unittest
+from crafting_intepreters.abstract_syntax_tree import IntLiteral, BinaryExpr, ParenExpr, calculate, Operator
 from crafting_intepreters.tokenizer import Token, TokenKind, tokenize
 
 class TestArithmeticOperatorsScanning(unittest.TestCase):
@@ -57,6 +58,43 @@ class TestComparisonOperatorsScanning(unittest.TestCase):
              Token(TokenKind.EQ_EQ, '=='), Token(TokenKind.EQ, '=')]
         )
 
+
+class TestASTCalculation(unittest.TestCase):
+    def test_calculate_int_literal(self):
+        tree = IntLiteral(10)
+        self.assertEqual(
+            calculate(tree), 10
+        )
+
+    def test_calculate_binary_expr_add(self):
+        tree = BinaryExpr(IntLiteral(1), Operator.ADD, IntLiteral(2))
+        self.assertEqual(
+            calculate(tree), 3
+        )
+
+    def test_calculate_binary_expr_sub(self):
+        tree = BinaryExpr(IntLiteral(3), Operator.SUB, IntLiteral(2))
+        self.assertEqual(
+            calculate(tree), 1
+        )
+
+    def test_calculate_binary_expr_sub_negative_left(self):
+        tree = BinaryExpr(IntLiteral(-2), Operator.SUB, IntLiteral(2))
+        self.assertEqual(
+            calculate(tree), -4
+        )
+
+    def test_calculate_binary_expr_sub_negative_right(self):
+        tree = BinaryExpr(IntLiteral(2), Operator.SUB, IntLiteral(-2))
+        self.assertEqual(
+            calculate(tree), 4
+        )
+
+    def test_calculate_binary_expr_sub_negative_both(self):
+        tree = BinaryExpr(IntLiteral(-2), Operator.SUB, IntLiteral(-2))
+        self.assertEqual(
+            calculate(tree), 0
+        )
 
 if __name__ == '__main__':
     unittest.main()
