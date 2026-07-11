@@ -1,4 +1,3 @@
-from crafting_intepreters.tokenizer import tokenize
 from dataclasses import dataclass
 from enum import Enum, auto
 
@@ -19,15 +18,18 @@ from enum import Enum, auto
 
 # expr := LPAREN expr RPAREN
 
+
 class BinaryOp(Enum):
     ADD = auto()
     SUB = auto()
     MUL = auto()
     DIV = auto()
 
+
 @dataclass
 class Expr:
     pass
+
 
 @dataclass
 class BinaryExpr(Expr):
@@ -46,6 +48,7 @@ class UnaryExpr(Expr):
 class IntLiteral(Expr):
     value: int
 
+
 # ParenExpr
 tree = BinaryExpr(IntLiteral(4), BinaryOp.ADD, IntLiteral(8))
 
@@ -55,13 +58,13 @@ tree = BinaryExpr(IntLiteral(4), BinaryOp.ADD, IntLiteral(8))
 #             return calculate(l) + calculate(r)
 #         case IntLiteral(value):
 #             return IntLiteral(value)
-        # case BinaryExpr(l, BinaryOp.SUB, r):
-        #     return calculate(l) - calculate(r)
-        # case BinaryExpr(l, BinaryOp.MUL, r):
-        #     return calculate(l) * calculate(r)
-        # case BinaryExpr(l, BinaryOp.DIV, r):
-        #     return calculate(l) / calculate(r)
-        # case UnaryExpr(BinaryOp.SUB, r)
+# case BinaryExpr(l, BinaryOp.SUB, r):
+#     return calculate(l) - calculate(r)
+# case BinaryExpr(l, BinaryOp.MUL, r):
+#     return calculate(l) * calculate(r)
+# case BinaryExpr(l, BinaryOp.DIV, r):
+#     return calculate(l) / calculate(r)
+# case UnaryExpr(BinaryOp.SUB, r)
 
 print(calculate(tree))
 

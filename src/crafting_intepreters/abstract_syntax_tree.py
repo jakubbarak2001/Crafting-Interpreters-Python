@@ -42,7 +42,15 @@ def calculate(expr):
             val_left = calculate(expr.left)
             val_right = calculate(expr.right)
             return val_left - val_right
+        case BinaryExpr(operator=Operator.MULT):
+            val_left = calculate(expr.left)
+            val_right = calculate(expr.right)
+            return val_left * val_right
+        case BinaryExpr(operator=Operator.DIV):
+            val_left = calculate(expr.left)
+            val_right = calculate(expr.right)
+            return val_left / val_right
 
 
-b = BinaryExpr(IntLiteral(-2), Operator.SUB, IntLiteral(-2))
+b = BinaryExpr(IntLiteral(2), Operator.DIV, IntLiteral(0))
 print(calculate(b))
