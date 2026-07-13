@@ -3,7 +3,7 @@ from crafting_intepreters.abstract_syntax_tree import (
     IntLiteral,
     BinaryExpr,
     calculate,
-    Operator,
+    Operator, dump_ast, ParenExpr,
 )
 from crafting_intepreters.tokenizer import Token, TokenKind, tokenize
 
@@ -119,6 +119,32 @@ class TestASTArithmeticCalculation(unittest.TestCase):
 
         with self.assertRaises(ZeroDivisionError):
             calculate(tree)
+
+# class TestAST(unittest.TestCase):
+#     def test_ast_int_literal(self):
+#         tree = (IntLiteral(2))
+#
+#         self.assertEqual(dump_ast(tree), "IntLiteral(2)")
+#
+#     def test_ast_binary_expr(self):
+#         tree = (BinaryExpr(IntLiteral(2), Operator.ADD, IntLiteral(4)))
+#
+#         self.assertEqual(dump_ast(tree), "BinaryExpr"
+#                                          "\n  IntLiteral(2)"
+#                                          "\n  Operator.ADD"
+#                                          "\n  IntLiteral(4)")
+#
+#     def test_ast_paren_expr(self):
+#         tree = BinaryExpr(ParenExpr(BinaryExpr(IntLiteral(4), Operator.ADD, IntLiteral(8))), Operator.MULT, IntLiteral(2))
+#
+#         self.assertEqual(dump_ast(tree), "BinaryExpr"
+#                                          "\n  left: ParenExpr"
+#                                          "\n    expr: BinaryExpr"
+#                                          "\n      left: IntLiteral(4)"
+#                                          "\n      op: ADD"
+#                                          "\n      right: IntLiteral(8)"
+#                                          "\n    op: Mul"
+#                                          "\n    right: IntLiteral(2)")
 
 
 if __name__ == "__main__":
