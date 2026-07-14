@@ -1,11 +1,11 @@
 import unittest
-from crafting_intepreters.abstract_syntax_tree import (
+from crafting_interpreters.abstract_syntax_tree import (
     IntLiteral,
     BinaryExpr,
     calculate,
-    Operator,
+    Operator, dump_ast,
 )
-from crafting_intepreters.tokenizer import Token, TokenKind, tokenize
+from crafting_interpreters.tokenizer import Token, TokenKind, tokenize
 
 
 class TestArithmeticOperatorsScanning(unittest.TestCase):
@@ -119,6 +119,32 @@ class TestASTArithmeticCalculation(unittest.TestCase):
 
         with self.assertRaises(ZeroDivisionError):
             calculate(tree)
+
+class TestASTStructure(unittest.TestCase):
+    def test_int_literal_payload(self):
+         tree = IntLiteral(10)
+         self.assertEqual(dump_ast(tree), "IntLiteral(10)")
+
+    def test_int_literal_indentation(self):
+        tree = IntLiteral(10)
+        self.assertEqual(dump_ast(tree, 2), "    IntLiteral(10)")
+
+    def test_binary_expr_payload(self):
+        tree = BinaryExpr(IntLiteral(1), Operator.ADD, IntLiteral(2))
+        self.assertEqual(dump_ast(tree), "BinaryExpr"
+                                         "\n  IntLiteral(1)"
+                                         "\n  Operator: ADD"
+                                         "\n  IntLiteral(2)")
+
+    def test_binary_expr_payload_nested(self):
+        tree = BinaryExpr(IntLiteral(1), Operator.ADD, BinaryExpr(IntLiteral(2), Operator.MULT, IntLiteral(3)))
+        self.assertEqual(dump_ast(tree), "BinaryExpr"
+                                         "\n  IntLiteral(1)"
+                                         "\n  Operator: ADD"
+                                         "\n  BinaryExpr"
+                                         "\n    IntLiteral(2)"
+                                         "\n    Operator: MULT"
+                                         "\n    IntLiteral(3)")
 
 
 if __name__ == "__main__":
