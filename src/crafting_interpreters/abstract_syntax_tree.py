@@ -63,6 +63,9 @@ def dump_ast(expr, level=0):
             val_right = dump_ast(expr.right, level + 1)
             return (f"{indentation}{BinaryExpr.__name__}"
                     f"\n{val_left}\n{op}\n{val_right}")
+        case ParenExpr():
+            paren = dump_ast(expr.paren, level + 1)
+            return f"{indentation}{ParenExpr.__name__}\n{paren}"
         case Operator():
             return f"{indentation}{Operator.__name__}: {expr.name}"
 

@@ -3,7 +3,7 @@ from crafting_interpreters.abstract_syntax_tree import (
     IntLiteral,
     BinaryExpr,
     calculate,
-    Operator, dump_ast,
+    Operator, dump_ast, ParenExpr,
 )
 from crafting_interpreters.tokenizer import Token, TokenKind, tokenize
 
@@ -145,6 +145,17 @@ class TestASTStructure(unittest.TestCase):
                                          "\n    IntLiteral(2)"
                                          "\n    Operator: MULT"
                                          "\n    IntLiteral(3)")
+
+    def test_paren_expr_payload(self):
+        tree = BinaryExpr(IntLiteral(1), Operator.MULT, ParenExpr(BinaryExpr(IntLiteral(2), Operator.ADD, IntLiteral(3))))
+        self.assertEqual(dump_ast(tree), "BinaryExpr"
+                                         "\n  IntLiteral(1)"
+                                         "\n  Operator: MULT"
+                                         "\n  ParenExpr"
+                                         "\n    BinaryExpr"
+                                         "\n      IntLiteral(2)"
+                                         "\n      Operator: ADD"
+                                         "\n      IntLiteral(3)")
 
 
 if __name__ == "__main__":
