@@ -74,5 +74,5 @@ def dump_ast(expr: Node | Operator, level:int=0):
         case _:
             raise ValueError(f"Unexpected input: {expr}")
 
-tree = BinaryExpr(ParenExpr(BinaryExpr(IntLiteral(2), Operator.MULT, IntLiteral(3))), Operator.ADD, IntLiteral(4))
-print(calculate(tree))
+# tree = BinaryExpr(ParenExpr(BinaryExpr(IntLiteral(2), Operator.MULT, IntLiteral(3))), Operator.ADD, IntLiteral(4))
+# print(calculate(tree))

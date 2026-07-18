@@ -5,6 +5,7 @@ from crafting_interpreters.abstract_syntax_tree import (
     calculate,
     Operator, dump_ast, ParenExpr,
 )
+from crafting_interpreters.parser import parse, Parser
 from crafting_interpreters.tokenizer import Token, TokenKind, tokenize
 
 
@@ -14,6 +15,7 @@ class TestArithmeticOperatorsScanning(unittest.TestCase):
         Token(TokenKind.MINUS, "-"),
         Token(TokenKind.STAR, "*"),
         Token(TokenKind.SLASH, "/"),
+        Token(TokenKind.EOF, "")
     ]
 
     def test_standard_operators(self):
@@ -28,16 +30,16 @@ class TestArithmeticOperatorsScanning(unittest.TestCase):
     def test_comment_is_skipped(self):
         self.assertEqual(
             tokenize("+ # this is ignored\n-"),
-            [Token(TokenKind.PLUS, "+"), Token(TokenKind.MINUS, "-")],
+            [Token(TokenKind.PLUS, "+"), Token(TokenKind.MINUS, "-"), Token(TokenKind.EOF, "")],
         )
 
     def test_comment_at_end_of_file(self):
-        self.assertEqual(tokenize("+ # this is ignored"), [Token(TokenKind.PLUS, "+")])
+        self.assertEqual(tokenize("+ # this is ignored"), [Token(TokenKind.PLUS, "+"), Token(TokenKind.EOF, "")])
 
     def test_newline_is_whitespace(self):
         self.assertEqual(
             tokenize("+\n-"),
-            [Token(TokenKind.PLUS, "+"), Token(TokenKind.MINUS, "-")],
+            [Token(TokenKind.PLUS, "+"), Token(TokenKind.MINUS, "-"), Token(TokenKind.EOF, "")],
         )
 
 
@@ -49,6 +51,7 @@ class TestComparisonOperatorsScanning(unittest.TestCase):
                 Token(TokenKind.LT, "<"),
                 Token(TokenKind.GT, ">"),
                 Token(TokenKind.EQ, "="),
+                Token(TokenKind.EOF, ""),
             ],
         )
 
@@ -60,6 +63,7 @@ class TestComparisonOperatorsScanning(unittest.TestCase):
                 Token(TokenKind.GT_EQ, ">="),
                 Token(TokenKind.EQ_EQ, "=="),
                 Token(TokenKind.BANG_EQ, "!="),
+                Token(TokenKind.EOF, ""),
             ],
         )
 
@@ -73,6 +77,7 @@ class TestComparisonOperatorsScanning(unittest.TestCase):
                 Token(TokenKind.EQ, "="),
                 Token(TokenKind.EQ_EQ, "=="),
                 Token(TokenKind.EQ, "="),
+                Token(TokenKind.EOF, ""),
             ],
         )
 
@@ -157,6 +162,22 @@ class TestASTStructure(unittest.TestCase):
                                          "\n      Operator: ADD"
                                          "\n      IntLiteral(3)")
 
+class TestParserArithmetic(unittest.TestCase):
+    def helper_pipeline(self, val:str):
+        self.value = val
+        tokens = tokenize(val)
+        parse = Parser(tokens)
+        expr = parse.expr()
+        calculated_value = calculate(expr)
+        return calculated_value
+
+    def test_token_to_calculate_pipeline(self):
+        tokens = self.helper_pipeline("20/10")
+        self.assertEqual(tokens, 2.0)
+
+    def test_add_expr(self):
+        tokens = self.helper_pipeline("10+5")
+        self.assertEqual(tokens, 15.0)
 
 if __name__ == "__main__":
     unittest.main()

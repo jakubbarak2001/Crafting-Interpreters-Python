@@ -6,6 +6,7 @@ class TokenKind(Enum):
     INT = auto()
     LPAREN = auto()
     RPAREN = auto()
+    EOF = auto()
     PLUS = auto()
     MINUS = auto()
     STAR = auto()
@@ -120,4 +121,5 @@ def tokenize(src: str) -> list[Token]:
         token_kind = _parse_one_token(stream)
         if token_kind not in (TokenKind.WHITESPACE, TokenKind.COMMENT):
             tokens.append(Token(token_kind, stream.mark_end()))
+    tokens.append(Token(TokenKind.EOF, ""))
     return tokens
