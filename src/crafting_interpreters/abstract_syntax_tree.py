@@ -37,21 +37,22 @@ def calculate(expr: Node):
         case IntLiteral(value):
             return value
         case BinaryExpr(left=left, operator=Operator.ADD, right=right):
-            val_left = calculate(left)
-            val_right = calculate(right)
+            val_left, val_right = evaluate(left, right)
             return val_left + val_right
         case BinaryExpr(left=left, operator=Operator.SUB, right=right):
-            val_left = calculate(left)
-            val_right = calculate(right)
+            val_left, val_right = evaluate(left, right)
             return val_left - val_right
         case BinaryExpr(left=left, operator=Operator.MULT, right=right):
-            val_left = calculate(left)
-            val_right = calculate(right)
+            val_left, val_right = evaluate(left, right)
             return val_left * val_right
         case BinaryExpr(left=left, operator=Operator.DIV, right=right):
-            val_left = calculate(left)
-            val_right = calculate(right)
+            val_left, val_right = evaluate(left, right)
             return val_left / val_right
+
+def evaluate(left: Node, right: Node):
+    val_left = calculate(left)
+    val_right = calculate(right)
+    return val_left, val_right
 
 def dump_ast(expr: Node | Operator, level:int=0):
     indent_unit = "  "
