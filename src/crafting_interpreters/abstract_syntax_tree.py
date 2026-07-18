@@ -30,44 +30,48 @@ class ParenExpr(Node):
     paren: Node
 
 
-def calculate(expr):
+def calculate(expr: Node):
     match expr:
-        case IntLiteral():
-            return expr.int_literal
-        case BinaryExpr(operator=Operator.ADD):
-            val_left = calculate(expr.left)
-            val_right = calculate(expr.right)
+        case ParenExpr(inner):
+            return calculate(inner)
+        case IntLiteral(value):
+            return value
+        case BinaryExpr(left=left, operator=Operator.ADD, right=right):
+            val_left = calculate(left)
+            val_right = calculate(right)
             return val_left + val_right
-        case BinaryExpr(operator=Operator.SUB):
-            val_left = calculate(expr.left)
-            val_right = calculate(expr.right)
+        case BinaryExpr(left=left, operator=Operator.SUB, right=right):
+            val_left = calculate(left)
+            val_right = calculate(right)
             return val_left - val_right
-        case BinaryExpr(operator=Operator.MULT):
-            val_left = calculate(expr.left)
-            val_right = calculate(expr.right)
+        case BinaryExpr(left=left, operator=Operator.MULT, right=right):
+            val_left = calculate(left)
+            val_right = calculate(right)
             return val_left * val_right
-        case BinaryExpr(operator=Operator.DIV):
-            val_left = calculate(expr.left)
-            val_right = calculate(expr.right)
+        case BinaryExpr(left=left, operator=Operator.DIV, right=right):
+            val_left = calculate(left)
+            val_right = calculate(right)
             return val_left / val_right
 
-def dump_ast(expr, level=0):
+def dump_ast(expr: Node | Operator, level:int=0):
     indent_unit = "  "
     indentation = level * indent_unit
     match expr:
-        case IntLiteral():
-            return f"{indentation}{IntLiteral.__name__}({expr.int_literal})"
-        case BinaryExpr():
-            val_left = dump_ast(expr.left, level + 1)
-            op = dump_ast(expr.operator, level + 1)
-            val_right = dump_ast(expr.right, level + 1)
+        case IntLiteral(value):
+            return f"{indentation}{IntLiteral.__name__}({value})"
+        case BinaryExpr(left, operator, right):
+            val_left = dump_ast(left, level + 1)
+            op = dump_ast(operator, level + 1)
+            val_right = dump_ast(right, level + 1)
             return (f"{indentation}{BinaryExpr.__name__}"
                     f"\n{val_left}\n{op}\n{val_right}")
-        case ParenExpr():
-            paren = dump_ast(expr.paren, level + 1)
+        case ParenExpr(inner):
+            paren = dump_ast(inner, level + 1)
             return f"{indentation}{ParenExpr.__name__}\n{paren}"
-        case Operator():
-            return f"{indentation}{Operator.__name__}: {expr.name}"
+        case Operator(name=name):
+            return f"{indentation}{Operator.__name__}: {name}"
+        case _:
+            raise ValueError(f"Unexpected input: {expr}")
 
-tree = BinaryExpr(IntLiteral(1), Operator.ADD, BinaryExpr(IntLiteral(2), Operator.MULT, IntLiteral(3)))
-print(dump_ast(tree))
+tree = BinaryExpr(ParenExpr(BinaryExpr(IntLiteral(2), Operator.MULT, IntLiteral(3))), Operator.ADD, IntLiteral(4))
+print(calculate(tree))
