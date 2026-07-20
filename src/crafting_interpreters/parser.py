@@ -1,5 +1,5 @@
 from crafting_interpreters.abstract_syntax_tree import IntLiteral, Node, ParenExpr, dump_ast, Operator, BinaryExpr, \
-    calculate
+    calculate, UnaryExpr
 from crafting_interpreters.tokenizer import Token, tokenize, TokenKind
 
 # Recursive descendant parsing
@@ -8,13 +8,24 @@ class Parser:
         self._tokens = tokens
         self._current_token = 0
 
-    # expr := add_expr
-    def expr(self):
+    # parse_expr := add_expr
+    def parse_expr(self):
         return self.add_expr()
 
-    # TODO: add_expr := mult_expr ((PLUS | MINUS) mult_expr)*
+    #add_expr := mult_expr ((PLUS | MINUS) mult_expr)*
     def add_expr(self):
-        return self.mult_expr()
+        e = self.mult_expr()
+        while True:
+            if self.peek() == TokenKind.PLUS:
+                op = Operator.ADD
+            elif self.peek() == TokenKind.MINUS:
+                op = Operator.SUB
+            else:
+                return e
+            self.consume()
+            right = self.mult_expr()
+            e = BinaryExpr(e, op, right)
+
 
     # mult_expr := unary_expr ((STAR | SLASH) unary_expr)*
     def mult_expr(self):
@@ -30,9 +41,18 @@ class Parser:
             right = self.unary_expr()
             e = BinaryExpr(e, op, right)
 
-    # TODO: unary_expr := MINUS unary_expr
     # unary_expr := primary_expr
     def unary_expr(self):
+        if self.peek() == TokenKind.PLUS or self.peek() == TokenKind.MINUS:
+            operator_token = self.consume()
+            if operator_token.kind == TokenKind.PLUS:
+                operator = Operator.ADD
+                operand = self.unary_expr()
+                return UnaryExpr(operator, operand)
+            elif operator_token.kind == TokenKind.MINUS:
+                operator = Operator.SUB
+                operand = self.unary_expr()
+                return UnaryExpr(operator, operand)
         return self.primary_expr()
 
     # primary_expr := INT                   IntLiteral
@@ -45,7 +65,7 @@ class Parser:
                 return IntLiteral(int_value)
             case TokenKind.LPAREN:
                 self.consume()
-                e = self.expr()
+                e = self.parse_expr()
                 self.expect(TokenKind.RPAREN)
                 return ParenExpr(e)
             case _:
@@ -64,7 +84,7 @@ class Parser:
             raise ValueError(f"Expected {kind}, but got {self.peek()}")
         return self.consume()
 
-tokens = tokenize("(42/2)")
-parse = Parser(tokens)
-expr = parse.expr()
-print(calculate(expr))
+# tokens = tokenize("-1")
+# parse = Parser(tokens)
+# expr = parse.parse_expr()
+# print(calculate(expr))

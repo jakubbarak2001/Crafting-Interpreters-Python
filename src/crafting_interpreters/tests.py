@@ -3,9 +3,9 @@ from crafting_interpreters.abstract_syntax_tree import (
     IntLiteral,
     BinaryExpr,
     calculate,
-    Operator, dump_ast, ParenExpr,
+    Operator, dump_ast, ParenExpr, UnaryExpr,
 )
-from crafting_interpreters.parser import parse, Parser
+from crafting_interpreters.parser import Parser
 from crafting_interpreters.tokenizer import Token, TokenKind, tokenize
 
 
@@ -125,6 +125,14 @@ class TestASTArithmeticCalculation(unittest.TestCase):
         with self.assertRaises(ZeroDivisionError):
             calculate(tree)
 
+    def test_calculate_unary_expr(self):
+        tree = UnaryExpr(Operator.SUB, IntLiteral(1))
+        self.assertEqual(calculate(tree), -1)
+
+    def test_calculate_unary_expr_double_minus(self):
+        tree = UnaryExpr(Operator.SUB, UnaryExpr(Operator.SUB, IntLiteral(1)))
+        self.assertEqual(calculate(tree), 1)
+
 class TestASTStructure(unittest.TestCase):
     def test_int_literal_payload(self):
          tree = IntLiteral(10)
@@ -162,22 +170,50 @@ class TestASTStructure(unittest.TestCase):
                                          "\n      Operator: ADD"
                                          "\n      IntLiteral(3)")
 
+    def test_unary_minus(self):
+        tree = BinaryExpr(UnaryExpr(Operator.SUB, IntLiteral(5)), Operator.MULT, IntLiteral(2))
+        self.assertEqual(dump_ast(tree), "BinaryExpr"
+                                         "\n  UnaryExpr"
+                                         "\n    Operator: SUB"
+                                         "\n    IntLiteral(5)"
+                                         "\n  Operator: MULT"
+                                         "\n  IntLiteral(2)")
+
+    def test_unary_nested_minus(self):
+        tree = BinaryExpr(UnaryExpr(Operator.SUB, UnaryExpr(Operator.SUB, IntLiteral(5))), Operator.MULT, IntLiteral(2))
+        self.assertEqual(dump_ast(tree), "BinaryExpr"
+                                         "\n  UnaryExpr"
+                                         "\n    Operator: SUB"
+                                         "\n    UnaryExpr"
+                                         "\n      Operator: SUB"
+                                         "\n      IntLiteral(5)"
+                                         "\n  Operator: MULT"
+                                         "\n  IntLiteral(2)")
+
 class TestParserArithmetic(unittest.TestCase):
-    def helper_pipeline(self, val:str):
+    def create_value_for_pipeline(self, val:str):
         self.value = val
         tokens = tokenize(val)
         parse = Parser(tokens)
-        expr = parse.expr()
+        expr = parse.parse_expr()
         calculated_value = calculate(expr)
         return calculated_value
 
     def test_token_to_calculate_pipeline(self):
-        tokens = self.helper_pipeline("20/10")
-        self.assertEqual(tokens, 2.0)
+        expr_value = self.create_value_for_pipeline("20/10")
+        self.assertEqual(expr_value, 2.0)
 
     def test_add_expr(self):
-        tokens = self.helper_pipeline("10+5")
-        self.assertEqual(tokens, 15.0)
+        expr_value = self.create_value_for_pipeline("10+5")
+        self.assertEqual(expr_value, 15.0)
+
+    def test_precedence_level(self):
+        expr_value = self.create_value_for_pipeline("1+2*3")
+        self.assertEqual(expr_value, 7.0)
+
+    def test_unary_expr(self):
+        expr_value = self.create_value_for_pipeline("-1")
+        self.assertEqual(expr_value, -1)
 
 if __name__ == "__main__":
     unittest.main()
