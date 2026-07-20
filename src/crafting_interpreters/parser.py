@@ -46,13 +46,12 @@ class Parser:
         if self.peek() == TokenKind.PLUS or self.peek() == TokenKind.MINUS:
             operator_token = self.consume()
             if operator_token.kind == TokenKind.PLUS:
-                operator = Operator.ADD
                 operand = self.unary_expr()
-                return UnaryExpr(operator, operand)
+                return operand
             elif operator_token.kind == TokenKind.MINUS:
-                operator = Operator.SUB
+                operator = Operator.NEG
                 operand = self.unary_expr()
-                return UnaryExpr(operator, operand)
+                return UnaryExpr(operator, operand) #UnaryExpr(Operator.SUB, IntLiteral(1))
         return self.primary_expr()
 
     # primary_expr := INT                   IntLiteral

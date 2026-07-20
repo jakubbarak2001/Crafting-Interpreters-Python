@@ -7,6 +7,7 @@ class Operator(Enum):
     SUB = auto()
     MULT = auto()
     DIV = auto()
+    NEG = auto()
 
 
 class Node:
@@ -52,9 +53,7 @@ def calculate(expr: Node):
         case BinaryExpr(left=left, operator=Operator.DIV, right=right):
             val_left, val_right = evaluate(left, right)
             return val_left / val_right
-        case UnaryExpr(operator=Operator.ADD, operand=operand):
-            return calculate(operand)
-        case UnaryExpr(operator=Operator.SUB, operand=operand):
+        case UnaryExpr(operator=Operator.NEG, operand=operand):
             return -calculate(operand)
 
 def evaluate(left: Node, right: Node):

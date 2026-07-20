@@ -126,11 +126,11 @@ class TestASTArithmeticCalculation(unittest.TestCase):
             calculate(tree)
 
     def test_calculate_unary_expr(self):
-        tree = UnaryExpr(Operator.SUB, IntLiteral(1))
+        tree = UnaryExpr(Operator.NEG, IntLiteral(1))
         self.assertEqual(calculate(tree), -1)
 
     def test_calculate_unary_expr_double_minus(self):
-        tree = UnaryExpr(Operator.SUB, UnaryExpr(Operator.SUB, IntLiteral(1)))
+        tree = UnaryExpr(Operator.NEG, UnaryExpr(Operator.NEG, IntLiteral(1)))
         self.assertEqual(calculate(tree), 1)
 
 class TestASTStructure(unittest.TestCase):
