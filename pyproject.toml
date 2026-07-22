@@ -1,0 +1,6 @@
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = [
+    "src/crafting_interpreters/tests.py",
+    "tests",
+]

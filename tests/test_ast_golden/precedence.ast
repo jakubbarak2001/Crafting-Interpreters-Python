@@ -1,0 +1,9 @@
+source: 1 + 2 * 3
+
+BinaryExpr
+  IntLiteral(1)
+  Operator: ADD
+  BinaryExpr
+    IntLiteral(2)
+    Operator: MULT
+    IntLiteral(3)

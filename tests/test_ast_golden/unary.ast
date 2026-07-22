@@ -1,0 +1,10 @@
+source: --5 * 2
+
+BinaryExpr
+  UnaryExpr
+    Operator: NEG
+    UnaryExpr
+      Operator: NEG
+      IntLiteral(5)
+  Operator: MULT
+  IntLiteral(2)

@@ -21,6 +21,8 @@ class TokenKind(Enum):
     EQ_EQ = auto()
     BANG = auto()
     BANG_EQ = auto()
+    PRINT = auto()
+    SEMICOLON = auto()
 
 
 @dataclass(frozen=True)
@@ -35,6 +37,8 @@ class Token:
 def _is_digit(c: str) -> bool:
     return "0" <= c <= "9"
 
+def _is_alpha(c: str) -> bool:
+    return "a" <= c <= "z"
 
 class CharStream:
     def __init__(self, src: str):
@@ -83,6 +87,13 @@ def _parse_one_token(stream: CharStream) -> TokenKind:
             while _is_digit(stream.peek()):
                 stream.next()
             return TokenKind.INT
+        # TODO: Collect the full identifier string and match it against a keyword dictionary instead of hardcoding a return token.
+        case c if _is_alpha(c):
+            while _is_alpha(stream.peek()) or _is_digit(stream.peek()):
+                stream.next()
+            return TokenKind.PRINT
+        case ";":
+            return TokenKind.SEMICOLON
         case " " | "\n":
             return TokenKind.WHITESPACE
         case "<":
@@ -123,3 +134,5 @@ def tokenize(src: str) -> list[Token]:
             tokens.append(Token(token_kind, stream.mark_end()))
     tokens.append(Token(TokenKind.EOF, ""))
     return tokens
+
+print(tokenize("print 1 + 2;"))

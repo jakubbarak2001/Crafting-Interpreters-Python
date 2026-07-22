@@ -215,5 +215,18 @@ class TestParserArithmetic(unittest.TestCase):
         expr_value = self.create_value_for_pipeline("-1")
         self.assertEqual(expr_value, -1)
 
+class TestStatement(unittest.TestCase):
+    def test_tokenize_print_statement(self):
+        expected = [
+            Token(TokenKind.PRINT, "print"),
+            Token(TokenKind.INT, "1"),
+            Token(TokenKind.PLUS, "+"),
+            Token(TokenKind.INT, "2"),
+            Token(TokenKind.SEMICOLON, ";"),
+            Token(TokenKind.EOF, ""),
+        ]
+
+        assert tokenize("print 1 + 2;") == expected
+
 if __name__ == "__main__":
     unittest.main()
