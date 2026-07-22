@@ -218,7 +218,7 @@ class TestParserArithmetic(unittest.TestCase):
 class TestStatement(unittest.TestCase):
     def test_tokenize_print_statement(self):
         expected = [
-            Token(TokenKind.PRINT, "print"),
+            Token(TokenKind.IDENTIFIER, "print"),
             Token(TokenKind.INT, "1"),
             Token(TokenKind.PLUS, "+"),
             Token(TokenKind.INT, "2"),

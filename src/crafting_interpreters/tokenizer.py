@@ -21,7 +21,7 @@ class TokenKind(Enum):
     EQ_EQ = auto()
     BANG = auto()
     BANG_EQ = auto()
-    PRINT = auto()
+    IDENTIFIER = auto()
     SEMICOLON = auto()
 
 
@@ -38,7 +38,19 @@ def _is_digit(c: str) -> bool:
     return "0" <= c <= "9"
 
 def _is_alpha(c: str) -> bool:
+    return _is_lower_alpha(c) or _is_upper_alpha(c)
+
+def _is_upper_alpha(c: str) -> bool:
+    return "A" <= c <= "Z"
+
+def _is_lower_alpha(c: str) -> bool:
     return "a" <= c <= "z"
+
+def _is_first_id_letter(c: str) -> bool:
+    return _is_alpha(c) or c == "_"
+
+def _is_other_id_letter(c: str) -> bool:
+    return _is_alpha(c) or c == "_" or _is_digit(c)
 
 class CharStream:
     def __init__(self, src: str):
@@ -87,11 +99,12 @@ def _parse_one_token(stream: CharStream) -> TokenKind:
             while _is_digit(stream.peek()):
                 stream.next()
             return TokenKind.INT
-        # TODO: Collect the full identifier string and match it against a keyword dictionary instead of hardcoding a return token.
-        case c if _is_alpha(c):
-            while _is_alpha(stream.peek()) or _is_digit(stream.peek()):
+        # TODO: Collect the full identifier string and match it against a
+        #  keyword dictionary instead of hardcoding a return token.
+        case c if _is_first_id_letter(c):
+            while _is_other_id_letter(stream.peek()):
                 stream.next()
-            return TokenKind.PRINT
+            return TokenKind.IDENTIFIER
         case ";":
             return TokenKind.SEMICOLON
         case " " | "\n":
@@ -135,4 +148,4 @@ def tokenize(src: str) -> list[Token]:
     tokens.append(Token(TokenKind.EOF, ""))
     return tokens
 
-print(tokenize("print 1 + 2;"))
+print(tokenize("PRINT 1 + 2;"))
