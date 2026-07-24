@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
 
-
 class TokenKind(Enum):
     INT = auto()
     LPAREN = auto()
@@ -22,8 +21,12 @@ class TokenKind(Enum):
     BANG = auto()
     BANG_EQ = auto()
     IDENTIFIER = auto()
+    PRINT = auto()
     SEMICOLON = auto()
 
+KEYWORDS = {
+      "print": TokenKind.PRINT,
+  }
 
 @dataclass(frozen=True)
 class Token:
@@ -32,7 +35,6 @@ class Token:
 
     def __repr__(self):
         return f"{self.kind.name} {self.value!r}"
-
 
 def _is_digit(c: str) -> bool:
     return "0" <= c <= "9"
@@ -76,7 +78,6 @@ class CharStream:
         # else:
         #     return ''
 
-
 def _parse_one_token(stream: CharStream) -> TokenKind:
     match stream.next():
         case "(":
@@ -99,8 +100,6 @@ def _parse_one_token(stream: CharStream) -> TokenKind:
             while _is_digit(stream.peek()):
                 stream.next()
             return TokenKind.INT
-        # TODO: Collect the full identifier string and match it against a
-        #  keyword dictionary instead of hardcoding a return token.
         case c if _is_first_id_letter(c):
             while _is_other_id_letter(stream.peek()):
                 stream.next()
@@ -136,16 +135,21 @@ def _parse_one_token(stream: CharStream) -> TokenKind:
         case c:
             raise ValueError(f"Invalid symbol: {c}")
 
-
 def tokenize(src: str) -> list[Token]:
     tokens = []
     stream = CharStream(src)
     while stream.peek() != "":
         stream.mark_start()
         token_kind = _parse_one_token(stream)
+        token_value = stream.mark_end()
+
+        if token_kind == TokenKind.IDENTIFIER and token_value == "print":
+            token_kind = TokenKind.PRINT
+
         if token_kind not in (TokenKind.WHITESPACE, TokenKind.COMMENT):
             tokens.append(Token(token_kind, stream.mark_end()))
+
     tokens.append(Token(TokenKind.EOF, ""))
     return tokens
 
-print(tokenize("PRINT 1 + 2;"))
+print(tokenize("print 1 + 2;"))

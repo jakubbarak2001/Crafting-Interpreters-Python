@@ -1,4 +1,4 @@
-from crafting_interpreters.abstract_syntax_tree import IntLiteral, Node, ParenExpr, dump_ast, Operator, BinaryExpr, \
+from crafting_interpreters.abstract_syntax_tree import IntLiteral, Expr, ParenExpr, dump_ast, Operator, BinaryExpr, \
     calculate, UnaryExpr
 from crafting_interpreters.tokenizer import Token, tokenize, TokenKind
 
@@ -56,7 +56,7 @@ class Parser:
 
     # primary_expr := INT                   IntLiteral
     # primary_expr := LPAREN expr RPAREN
-    def primary_expr(self) -> Node:
+    def primary_expr(self) -> Expr:
         match self.peek():
             case TokenKind.INT:
                 t = self.consume()

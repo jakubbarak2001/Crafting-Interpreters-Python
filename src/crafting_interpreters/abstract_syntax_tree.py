@@ -9,33 +9,32 @@ class Operator(Enum):
     DIV = auto()
     NEG = auto()
 
-
-class Node:
+class Statement:
     pass
 
+class Expr(Statement):
+    pass
 
 @dataclass
-class BinaryExpr(Node):
-    left: Node
+class BinaryExpr(Expr):
+    left: Expr
     operator: Operator
-    right: Node
+    right: Expr
 
 @dataclass
-class UnaryExpr(Node):
+class UnaryExpr(Expr):
     operator: Operator
-    operand: Node
+    operand: Expr
 
 @dataclass
-class IntLiteral(Node):
+class IntLiteral(Expr):
     int_literal: int
 
-
 @dataclass
-class ParenExpr(Node):
-    paren: Node
+class ParenExpr(Expr):
+    paren: Expr
 
-
-def calculate(expr: Node):
+def calculate(expr: Expr):
     match expr:
         case ParenExpr(inner):
             return calculate(inner)
@@ -56,12 +55,12 @@ def calculate(expr: Node):
         case UnaryExpr(operator=Operator.NEG, operand=operand):
             return -calculate(operand)
 
-def evaluate(left: Node, right: Node):
+def evaluate(left: Expr, right: Expr):
     val_left = calculate(left)
     val_right = calculate(right)
     return val_left, val_right
 
-def dump_ast(expr: Node | Operator, level:int=0):
+def dump_ast(expr: Expr | Operator, level:int=0):
     indent_unit = "  "
     indentation = level * indent_unit
     match expr:
@@ -78,7 +77,6 @@ def dump_ast(expr: Node | Operator, level:int=0):
             val_operand = dump_ast(operand, level + 1)
             return (f"{indentation}{UnaryExpr.__name__}"
                     f"\n{val_operator}\n{val_operand}")
-
         case ParenExpr(inner):
             paren = dump_ast(inner, level + 1)
             return f"{indentation}{ParenExpr.__name__}\n{paren}"
