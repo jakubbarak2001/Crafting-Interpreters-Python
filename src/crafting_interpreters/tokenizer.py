@@ -143,13 +143,13 @@ def tokenize(src: str) -> list[Token]:
         token_kind = _parse_one_token(stream)
         token_value = stream.mark_end()
 
-        if token_kind == TokenKind.IDENTIFIER and token_value == "print":
-            token_kind = TokenKind.PRINT
+        if token_kind == TokenKind.IDENTIFIER:
+            token_kind = KEYWORDS.get(token_value, TokenKind.IDENTIFIER)
 
         if token_kind not in (TokenKind.WHITESPACE, TokenKind.COMMENT):
-            tokens.append(Token(token_kind, stream.mark_end()))
+            tokens.append(Token(token_kind, token_value))
 
     tokens.append(Token(TokenKind.EOF, ""))
     return tokens
 
-print(tokenize("print 1 + 2;"))
+# print(tokenize("print 1 + 2;"))
